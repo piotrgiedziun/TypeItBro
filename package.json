@@ -1,0 +1,11 @@
+{
+    "name": "Tetris"
+  , "description": ""
+  , "version": "0.0.1"
+  , "dependencies": {
+        "express": "2.5.5"
+    	, "ejs": ""
+		, "socket.io-client": "0.9.10"
+    	, "nib": "0.2.0"
+    }
+}

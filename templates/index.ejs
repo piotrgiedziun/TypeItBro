@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Type It [Bro]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Type It [Bro]</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+    	<div class="row">
+			<div class="span6 you user">
+				<h1>You</h1>
+      			<input type="text" class="type_area"/>
+      			<div class="well well-small text_area">
+      				<form class="form-horizontal">
+					  <div class="control-group">
+					    <label class="control-label" for="user_name">Name</label>
+					    <div class="controls">
+					      <input type="text" id="user_name" placeholder="Name">
+                <span id="name_error" class="label label-important">Invalid name. Must be at least 2 characters long.</span>
+					    </div>
+					  </div>
+					  <div class="control-group">
+					    <div class="controls">
+					      <button id="start" type="button" class="btn btn-primary" data-loading-text="Connecting...">Start game</button>
+					    </div>
+					  </div>
+					</form>
+      			</div>
+			</div>
+    		<div class="span6 bro user">
+    			<h1>Your bro</h1>
+    			<input type="text" class="type_area" readonly="readonly"/>
+      			<div class="well well-small text_area"></div>
+      		</div>
+    	</div>
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+    var tib = null;
+	$(document).ready(function() {
+		tib = new TypeItBro({
+			text_area: {
+				you: $('.you .text_area'),
+				bro: $('.bro .text_area')
+			},
+			type_area: {
+				you: $('.you .type_area'),
+				bro: $('.bro .type_area')
+			},
+			start: $('#start'),
+			user_name: $('#user_name'),
+      name_error: $('#name_error'),
+			session: true
+		});
+	});
+	</script>
+
+  </body>
+</html>

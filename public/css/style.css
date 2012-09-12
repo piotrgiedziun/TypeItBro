@@ -1,0 +1,43 @@
+body {
+	padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+.type_area {
+  width: 97%;
+}
+.error {
+	text-decoration: underline;
+	color: red;
+}
+.selected {
+	background: #FFB133;
+}
+.selected.bro {
+	background: #16D9F2;
+}
+.form-horizontal .controls {
+	margin-left: 100px;
+}
+.form-horizontal .control-label {
+	width: 50px;
+}
+.time {
+	width: 100%;
+	text-align: center;
+	padding: 20px;
+	font-size: 200%;
+}
+.win {
+	width: 100%;
+	text-align: center;
+	margin: 20px;
+	font-size: 400%;
+	color: red;
+	position: absolute;	
+}
+.user {
+	position: relative;
+	line-height: 1.9;
+}
+#name_error {
+	display: none;
+}
