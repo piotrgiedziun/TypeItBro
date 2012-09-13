@@ -4,7 +4,8 @@
 
 var express = require('express')
   , sio = require('socket.io')
-  , request = require('request');
+  , request = require('request')
+  , fs = require('fs');
 
 
 /**
@@ -17,6 +18,13 @@ var express = require('express')
 randomInRange = module.exports.randomInRange = function(min, max) {
   return Math.round(min+(Math.random()*(max-min)));
 }
+
+
+/**
+ * Load static data
+ */
+var file = fs.readFileSync('books.json', 'utf8'); 
+var books = JSON.parse(file); 
 
 /**
  * App.
@@ -85,18 +93,6 @@ var gameLogic = function() {
 
   // this one will be fun!
   this.get_text = function(callback) {
-    var books = [
-      {
-        title: 'Metamorphosis',
-        author: 'Franz Kafka',
-        url: 'http://www.gutenberg.org/cache/epub/5200/pg5200.txt'
-      },
-      {
-        title: 'Adventures of Huckleberry Finn, Complete',
-        author: 'Mark Twain',
-        url: 'http://www.gutenberg.org/cache/epub/76/pg76.txt'
-      }
-    ];
 
     var forbidden_chars = [
       '**', '---'
@@ -116,6 +112,7 @@ var gameLogic = function() {
         for(paragraph_id in paragraphs) {
           lines_in_paragraph = paragraphs[paragraph_id].split(/\n/g).length;
 
+          // @TODO: if text is longer cut it our (".", "?", "!", ";")
           if(lines_in_paragraph > 6 && lines_in_paragraph < 10) {
             // check for forbidden chars
             for(forbidden_char in forbidden_chars) {
@@ -124,8 +121,10 @@ var gameLogic = function() {
               }
             }
             // only valids paragraphs can reach this line
-            // .replace(/(\r\n|\n|\r)/gm,'')
-            valid_paragraphs.push(paragraphs[paragraph_id].replace(/\r\n/gm,''));
+            valid_paragraphs.push(paragraphs[paragraph_id]
+              .replace(/(\r\n|\n|\r)/gm, ' ')
+              .replace(/  /gm, ' ')
+            );
           }
         }
         // invloke callback with selected text

@@ -34,6 +34,23 @@ function getHashParameter(name) {
     );
 }
 
+function timeObject(secs)
+{
+    var hours = Math.floor(secs / (60 * 60));
+   
+    var divisor_for_minutes = secs % (60 * 60);
+    var minutes = Math.floor(divisor_for_minutes / 60);
+ 
+    var divisor_for_seconds = divisor_for_minutes % 60;
+    var seconds = Math.ceil(divisor_for_seconds);
+   
+    return {
+        "h": (hours<10)?('0'+hours):hours,
+        "m": (minutes<10)?('0'+minutes):minutes,
+        "s": (seconds<10)?('0'+seconds):seconds
+    };;
+}
+
 TypeItBro.prototype.login = function() {
 	var inst = this;
 	$(this.settings.type_area.you).attr('readonly', true);
@@ -104,7 +121,7 @@ TypeItBro.prototype.start = function(data) {
 		if(time == 0 && recived != true) {
 			clearInterval(timer);
 			$(inst.settings.text_area.you).html('Waiting for text...');
-			$(inst.settings.text_area.bro).text(text);
+			$(inst.settings.text_area.bro).text(inst.text);
 		}
 	}, 1000);
 
@@ -125,7 +142,9 @@ TypeItBro.prototype.run = function() {
 
 	var time = 0;
 	var timer = setInterval(function() {
-		$(inst.settings.timer).html(++time);
+		var currentTime = timeObject(++time);
+
+		$(inst.settings.timer).html(currentTime.m +':'+currentTime.s);
 	}, 1000);
 
 	// focust input area whenever key is pressed

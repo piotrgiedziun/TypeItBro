@@ -1,0 +1,5 @@
+- cut longer paragraphs (line count)
+- show statistic after game
+	- time
+	- mistakes count
+- firefox issue
