@@ -36,6 +36,7 @@
               <li><a href="#about">About</a></li>
             </ul>
           </div><!--/.nav-collapse -->
+            <span class="timer"></span>
         </div>
       </div>
     </div>
@@ -44,15 +45,15 @@
 
     	<div class="row">
 			<div class="span6 you user">
-				<h1>You</h1>
-      			<input type="text" class="type_area"/>
+				<h1>You<span class="name you"></span></h1>
+            <input type="text" class="type_area"/>
       			<div class="well well-small text_area">
-      				<form class="form-horizontal">
+      	   <form class="form-horizontal name_form">
 					  <div class="control-group">
 					    <label class="control-label" for="user_name">Name</label>
 					    <div class="controls">
-					      <input type="text" id="user_name" placeholder="Name">
-                <span id="name_error" class="label label-important">Invalid name. Must be at least 2 characters long.</span>
+					      <input type="text" autofocus="autofocus" id="user_name" placeholder="Name">
+                <span id="name_error" class="label label-important">Invalid name.  (2-25 chars is allowed)</span>
 					    </div>
 					  </div>
 					  <div class="control-group">
@@ -64,7 +65,7 @@
       			</div>
 			</div>
     		<div class="span6 bro user">
-    			<h1>Your bro</h1>
+    			<h1>Your bro<span class="name bro"></span></h1>
     			<input type="text" class="type_area" readonly="readonly"/>
       			<div class="well well-small text_area"></div>
       		</div>
@@ -90,10 +91,15 @@
 				you: $('.you .type_area'),
 				bro: $('.bro .type_area')
 			},
+      name_area: {
+        you: $('.name.you'),
+        bro: $('.name.bro')
+      },
 			start: $('#start'),
 			user_name: $('#user_name'),
       name_error: $('#name_error'),
-			session: true
+      name_form: $('.name_form'),
+      timer: $('.timer')
 		});
 	});
 	</script>

@@ -5,6 +5,7 @@ function TypeItBro (options) {
 	
 	// reset text cursors
 	this.text = '';
+	this.name = '';
 	this.errors = {
 		you: {},
 		bro: {}
@@ -27,9 +28,25 @@ function char(text) {
 	return text;
 }
 
+function getHashParameter(name) {
+    return decodeURI(
+        (RegExp(name + '=' + '(.+?)(&|$)').exec(location.hash.slice(1))||[,null])[1]
+    );
+}
+
 TypeItBro.prototype.login = function() {
 	var inst = this;
 	$(this.settings.type_area.you).attr('readonly', true);
+
+
+	$(this.settings.name_form).submit(function(e) {
+		if( $(inst.settings.user_name).attr('readonly') != "readonly" ) {
+			$(inst.settings.start).click();
+		}
+
+		e.preventDefault();
+		return false;
+	});
 
 	$(this.settings.start).click(function () {
 		// lock user name input
@@ -45,18 +62,33 @@ TypeItBro.prototype.login = function() {
 				$(inst.settings.name_error).show();
 				return;
 			}
+			inst.name = $(inst.settings.user_name).val();
+			$(inst.settings.name_area.you).text($(inst.settings.user_name).val());
 			$(inst.settings.start).text('Looking for bro...');
 		});
 	});
+
+	// auto login
+	if(getHashParameter('name') != "null") {
+		$(inst.settings.user_name).val(decodeURIComponent(getHashParameter('name')));
+		$(inst.settings.start).click();
+		location.hash = "";
+	}
 
 	this.socket.on('start', function( time ) {
 		inst.start(time);
 	});
 };
 
-TypeItBro.prototype.start = function(time) {
+TypeItBro.prototype.start = function(data) {
 	var inst = this;
 
+	// set opponent name
+	$(inst.settings.name_area.bro).text(data.name);
+	// set time
+	var time = data.time;
+
+	// count time
 	var recived = false;
 	var timer = setInterval(function() {
 
@@ -78,7 +110,6 @@ TypeItBro.prototype.start = function(time) {
 
 	this.socket.on('text', function(text) {
 		recived = true;
-		console.log(text);
 		inst.text = text;
 		$(inst.settings.text_area.you).text(text);
 		$(inst.settings.text_area.bro).text(text);
@@ -92,9 +123,15 @@ TypeItBro.prototype.run = function() {
 	// remove disables
 	$(this.settings.type_area.you).removeAttr('readonly');
 
+	var time = 0;
+	var timer = setInterval(function() {
+		$(inst.settings.timer).html(++time);
+	}, 1000);
+
 	// focust input area whenever key is pressed
 	$(document).keypress(function(event) {
-		if( ! $(inst.settings.type_area.you).is(":focus")) {
+		if( ! $(inst.settings.type_area.you).is(":focus") 
+			&&  $(inst.settings.type_area.you).attr('readonly') != "readonly") {
     		$(inst.settings.type_area.you).focus();
     		$(inst.settings.type_area.you).trigger(event);
     	}
@@ -112,7 +149,7 @@ TypeItBro.prototype.run = function() {
   	// validate input
 	$(this.settings.type_area.you).keypress(function(event) {
 		// don't care about this error.. It's made by invalid usage of user
-		if(inst.text.length <= inst.text_pos || inst.text_pos < 0) return false;
+		if(inst.text.length <= inst.text_pos || inst.text_pos < 0 || $(this).attr('readonly') == "readonly") return false;
 		// user typed invalid character
 		if(inst.text[inst.text_pos].toLowerCase() != String.fromCharCode(event.keyCode).toLowerCase()) {
 			// show prompt and block text area
@@ -142,6 +179,12 @@ TypeItBro.prototype.run = function() {
 		inst.renderText('you', inst.text_pos);
 	});
 
+	// play again
+	$('.play_again').live('click', function() {
+		location.hash="name="+encodeURIComponent(inst.name);
+		location.reload(true);
+	});
+
 	this.socket.on('progress', function(progress) {
 		console.log('progress where='+progress);
 		inst.renderText('bro', progress);
@@ -153,9 +196,18 @@ TypeItBro.prototype.run = function() {
 		inst.renderText('bro', where);
 	});
 
-	this.socket.on('win', function() {
-		console.log('opponent win! u suck!');
-		$(inst.settings.text_area.bro).prepend('<div class="win">WINER!</div>');
+	this.socket.on('winner', function() {
+		clearInterval(timer);
+		$(inst.settings.type_area.you).attr('readonly', true);
+		$(inst.settings.text_area.bro).prepend('<div class="lose">LOSER!</div>');
+		$(inst.settings.text_area.you).prepend('<div class="win">WINNER!<button class="play_again btn btn-success btn-large">Play again!</button></div>');
+	});
+
+	this.socket.on('loser', function() {
+		clearInterval(timer);
+		$(inst.settings.type_area.you).attr('readonly', true);
+		$(inst.settings.text_area.bro).prepend('<div class="win">WINNER!</div>');
+		$(inst.settings.text_area.you).prepend('<div class="lose">LOSER!<button class="play_again btn btn-success btn-large">Play again!</button></div>');
 	});
 };
 

@@ -31,8 +31,18 @@ body {
 	text-align: center;
 	margin: 20px;
 	font-size: 400%;
+	color: yellow;
+	position: absolute;	
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+.lose {
+	width: 100%;
+	text-align: center;
+	margin: 20px;
+	font-size: 400%;
 	color: red;
 	position: absolute;	
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 .user {
 	position: relative;
@@ -40,4 +50,16 @@ body {
 }
 #name_error {
 	display: none;
+}
+.name {
+	font-size: 15px;
+	float: right;
+}
+.play_again {
+    display: block;	
+    margin: 0 auto;
+}
+.timer {
+    float: right;	
+    margin: 10px;
 }
