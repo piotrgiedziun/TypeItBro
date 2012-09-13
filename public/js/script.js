@@ -167,18 +167,19 @@ TypeItBro.prototype.run = function() {
 
   	// validate input
 	$(this.settings.type_area.you).keypress(function(event) {
+		console.log(event.charCode);
 		// don't care about this error.. It's made by invalid usage of user
 		if(inst.text.length <= inst.text_pos || inst.text_pos < 0 || $(this).attr('readonly') == "readonly") return false;
 		// user typed invalid character
-		if(inst.text[inst.text_pos].toLowerCase() != String.fromCharCode(event.keyCode).toLowerCase()) {
+		if(inst.text[inst.text_pos].toLowerCase() != String.fromCharCode(event.charCode).toLowerCase()) {
 			// show prompt and block text area
 			inst.error_message = "You should press "+char(inst.text[inst.text_pos])+".";
-			console.log(inst.error_message);
+			
 			$(inst.settings.text_area.you).popover('show');
 			inst.errors.you[inst.text_pos] = true;
 			
 			// brodcast position
-			inst.socket.emit('progress', String.fromCharCode(event.keyCode));
+			inst.socket.emit('progress', String.fromCharCode(event.charCode));
 			inst.renderText('you', inst.text_pos);
 
 			return false;
@@ -189,12 +190,12 @@ TypeItBro.prototype.run = function() {
 		// finished game
 		if(inst.text.length == inst.text_pos) {
 			// game over
-			$(inst.settings.type_area.you).val($(inst.settings.type_area.you).val() + String.fromCharCode(event.keyCode).toLowerCase());
+			$(inst.settings.type_area.you).val($(inst.settings.type_area.you).val() + String.fromCharCode(event.charCode).toLowerCase());
 			$(inst.settings.type_area.you).attr('readonly', true);
 		}
 
 		// brodcast position
-		inst.socket.emit('progress', String.fromCharCode(event.keyCode));
+		inst.socket.emit('progress', String.fromCharCode(event.charCode));
 		inst.renderText('you', inst.text_pos);
 	});
 
@@ -205,12 +206,10 @@ TypeItBro.prototype.run = function() {
 	});
 
 	this.socket.on('progress', function(progress) {
-		console.log('progress where='+progress);
 		inst.renderText('bro', progress);
 	});
 
 	this.socket.on('error', function(where) {
-		console.log('error where='+where);
 		inst.errors.bro[where] = true;
 		inst.renderText('bro', where);
 	});
