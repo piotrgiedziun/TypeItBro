@@ -4,7 +4,7 @@ Usage:
 	open http://127.0.0.1:8001 (8001 by default; process.env.PORT)
 
 Used technology:
-	- socket.io usage
+	- socket.io
 		- binding sockets
 		- socket queue (finding opponent)
 		- store unique static data for game (2 paired socket)
