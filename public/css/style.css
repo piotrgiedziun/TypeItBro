@@ -63,3 +63,7 @@ body {
     float: right;	
     margin: 10px;
 }
+.game_over, .game_over .error {
+	color: transparent!important;
+	text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}

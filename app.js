@@ -68,10 +68,11 @@ var io = sio.listen(app, { log: false })
 
 var gameLogic = function() {
   inst = this;
-  this.time = 2;
+  this.time = 8;
   this.players = {};
   this.text = '';
   this.is_winer = false;
+  this.book = null;
 
   this.run = function() {
     // reset text position
@@ -99,10 +100,10 @@ var gameLogic = function() {
     ];
 
     // get random book
-    var book = books[randomInRange(0, books.length-1)];
+    this.book = books[randomInRange(0, books.length-1)];
 
     // get source (text form book)
-    request(book.url, function (error, response, text) {
+    request(this.book.url, function (error, response, text) {
       if (!error && response.statusCode == 200) {
         var valid_paragraphs = new Array();
 
@@ -141,7 +142,12 @@ var gameLogic = function() {
 
     for(player_id in this.players) {
       this.players[player_id].get('name', function(err, name) {
-        inst.players[inst.get_opponent_id(player_id)].emit('start', {time: inst.time, name: name});
+        inst.players[inst.get_opponent_id(player_id)].emit('start', {
+          time: inst.time,
+          name: name,
+          title: inst.book.title,
+          author: inst.book.author
+        });
       });
     }
 

@@ -51,6 +51,12 @@ function timeObject(secs)
     };;
 }
 
+TypeItBro.prototype.game_over = function() {
+	$(this.settings.type_area.you).attr('readonly', true);
+	$(this.settings.text_area.you).addClass('game_over');
+	$(this.settings.text_area.bro).addClass('game_over');
+};
+
 TypeItBro.prototype.login = function() {
 	var inst = this;
 	$(this.settings.type_area.you).attr('readonly', true);
@@ -92,8 +98,8 @@ TypeItBro.prototype.login = function() {
 		location.hash = "";
 	}
 
-	this.socket.on('start', function( time ) {
-		inst.start(time);
+	this.socket.on('start', function(data) {
+		inst.start(data);
 	});
 };
 
@@ -102,6 +108,10 @@ TypeItBro.prototype.start = function(data) {
 
 	// set opponent name
 	$(inst.settings.name_area.bro).text(data.name);
+
+	// book data
+	var book_data = '<div>Title: '+data.title+'</br>Author: '+data.author+'</div>';
+
 	// set time
 	var time = data.time;
 
@@ -115,8 +125,8 @@ TypeItBro.prototype.start = function(data) {
 			return;
 		}
 
-		$(inst.settings.text_area.you).html('<div class="time">'+--time+'</div>');
-		$(inst.settings.text_area.bro).html('<div class="time">'+time+'</div>');
+		$(inst.settings.text_area.you).html('<div class="time">'+--time+'</div>'+book_data);
+		$(inst.settings.text_area.bro).html('<div class="time">'+time+'</div>'+book_data);
 
 		if(time == 0 && recived != true) {
 			clearInterval(timer);
@@ -167,7 +177,6 @@ TypeItBro.prototype.run = function() {
 
   	// validate input
 	$(this.settings.type_area.you).keypress(function(event) {
-		console.log(event.charCode);
 		// don't care about this error.. It's made by invalid usage of user
 		if(inst.text.length <= inst.text_pos || inst.text_pos < 0 || $(this).attr('readonly') == "readonly") return false;
 		// user typed invalid character
@@ -216,14 +225,14 @@ TypeItBro.prototype.run = function() {
 
 	this.socket.on('winner', function() {
 		clearInterval(timer);
-		$(inst.settings.type_area.you).attr('readonly', true);
+		inst.game_over();
 		$(inst.settings.text_area.bro).prepend('<div class="lose">LOSER!</div>');
 		$(inst.settings.text_area.you).prepend('<div class="win">WINNER!<button class="play_again btn btn-success btn-large">Play again!</button></div>');
 	});
 
 	this.socket.on('loser', function() {
 		clearInterval(timer);
-		$(inst.settings.type_area.you).attr('readonly', true);
+		inst.game_over();
 		$(inst.settings.text_area.bro).prepend('<div class="win">WINNER!</div>');
 		$(inst.settings.text_area.you).prepend('<div class="lose">LOSER!<button class="play_again btn btn-success btn-large">Play again!</button></div>');
 	});
